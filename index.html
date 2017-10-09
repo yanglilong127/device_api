@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>移动设备API</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+	<script src='jquery-3.2.1.min.js'></script>
+	<style>
+		*{margin:0 auto; padding: 0}
+		#box{
+			background: red;
+			width: 300px;
+			height: 300px;
+		}
+		p{width:90%;}
+
+	</style>
+</head>
+<body>
+	
+	<div id="box">
+		<p id="p1"></p>
+		<p id="p2"></p>
+		<p id="p3"></p>
+	</div>
+
+<script>
+/**Vibration API
+ * *Vibration接口用于在浏览器中发出命令，使得设备振动。目前，只有Chrome和Firefox的Android平台最新版本支持它。
+ * vibrate方法可以使得设备振动，它的参数就是振动持续的毫秒数。
+ */
+
+navigator.vibrate = navigator.vibrate
+  || navigator.webkitVibrate
+  || navigator.mozVibrate
+  || navigator.msVibrate;
+
+if (navigator.vibrate) {
+  //使得设备振动1秒钟。
+  navigator.vibrate(1000);
+  $('#p1').text('我在震动');
+  //偶数位置的数组成员表示振动的毫秒数，奇数位置的数组成员表示等待的毫秒数。
+  //表示，设备先振动500毫秒，然后等待300毫秒，再接着振动100毫秒。
+  navigator.vibrate([500, 300, 100]);
+  //vibrate是一个非阻塞式的操作，即手机振动的同时，JavaScript代码继续向下运行。要停止振动，只有将0毫秒或者一个空数组传入vibrate方法。
+}
+
+/**Luminosity API
+ * **当移动设备的亮度传感器感知外部亮度发生显著变化时，会触发devicelight事件。目前，只有Firefox部署了这个API。
+ */
+if(window.DeviceLightEvent){
+	console.log('支持light');
+	window.addEventListener('devicelight', function(event) {
+	  console.log(event.value + 'lux');
+	  $('#p2').text('光线强度为:'+event.value);
+	});
+}else{
+	console.log('不支持light');
+}
+
+
+/**Orientation API用于检测手机的摆放方向（竖放或横放）。
+ * *
+***/
+if (window.DeviceOrientationEvent) {
+  console.log('支持');
+  window.addEventListener("deviceorientation",function(event){
+  	$('#p3').text('水平:'+event.alpha+'，竖直:'+event.beta+'，空间:'+event.gamma);
+	console.log(event.alpha);
+	console.log(event.beta);
+	console.log(event.gamma);
+	/***
+	alpha：表示围绕z轴的旋转，从0到360度。当设备水平摆放时，顶部指向地球的北极，alpha此时为0。
+	beta：表示围绕x轴的旋转，从-180度到180度。当设备水平摆放时，beta此时为0。
+	gramma：表示围绕y轴的选择，从-90到90度。当设备水平摆放时，gramma此时为0。
+	**/
+
+  });
+} else {
+  // 不支持
+  console.log('不支持');
+}
+
+
+</script>
+</body>
+</html>
